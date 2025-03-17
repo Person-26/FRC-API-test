@@ -1,7 +1,6 @@
 import torch
 from torch.utils.data import Dataset, DataLoader
 from torch import nn, optim
-from random import random
 
 # Define a simple neural network
 class TrajectoryModel(nn.Module):
