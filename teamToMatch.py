@@ -13,14 +13,15 @@ for year in range(2009, 2025):
     # Extract matches
     for event in data.values():  # Loop through all events
         for match in event:  # Loop through matches in each event
-            teams = match["teams"]  # Extract teams
+            if match["scoreRedFinal"] is not None and match["scoreBlueFinal"] is not None:  # Check if scores are available
+                teams = match["teams"]  # Extract teams
 
-            # Extract player IDs
-            players = [player["teamNumber"] for player in teams]
+                # Extract player IDs
+                players = [year - 2000] +[player["teamNumber"] for player in teams]
+                #players = [player["teamNumber"] for player in teams]
 
-            # Extract score (assuming stored in match["score"])
-            score = [match["scoreRedFinal"], match["scoreRedFoul"], match["scoreRedAuto"], match["scoreBlueFinal"], match["scoreBlueFoul"], match["scoreBlueAuto"]]
-            if not score.__contains__(None):
+                # Extract score (assuming stored in match["score"])
+                score = [1 if (match["scoreRedFinal"] > match["scoreBlueFinal"]) else 0.5 if (match["scoreRedFinal"] == match["scoreBlueFinal"]) else 0]
                 games.append(players)
                 scores.append(score)
 
@@ -29,4 +30,3 @@ for year in range(2009, 2025):
 # Convert to PyTorch tensors
 games_tensor = torch.tensor(games, dtype=torch.int)  # Player IDs
 scores_tensor = torch.tensor(scores, dtype=torch.float)  # Score vectors
-
