@@ -25,7 +25,7 @@ for year in range(2015, 2026):
                     events.append(eventName)
 
                 # Extract player IDs
-                players = [year - 2000, events.index(eventName), ] +[player["teamNumber"] for player in teams]
+                players = [year - 2000, events.index(eventName), 0 if match["tournamentLevel"] == "Qualification" else 1] +[player["teamNumber"] for player in teams]
                 #players = [player["teamNumber"] for player in teams]
 
                 # Extract score (assuming stored in match["score"])
@@ -44,4 +44,3 @@ dataset = TensorDataset(torch.tensor(games, dtype=torch.int), torch.tensor(score
 torch.save(dataset, "dataset.pt")
 testset = TensorDataset(torch.tensor(test_games, dtype=torch.int), torch.tensor(test_scores, dtype=torch.float))
 torch.save(testset, "testset.pt")
-print(len(events))

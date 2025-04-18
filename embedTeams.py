@@ -23,8 +23,12 @@ def main():
     print(f"Using device: {device}")
     model.to(device)
     criterion.to(device)
+    
     # Training Loop
     epoch = 1
+    best_accuracy = 0
+    decrease_count = 0  # Counter for consecutive accuracy decreases
+
     while True:
         total_loss = 0
         for batch in dataloader:
@@ -44,8 +48,23 @@ def main():
             probabilities = torch.sigmoid(predictions)
             
         else:
+            accuracy = test(model, device)
             print(f"Epoch {epoch}, Loss: {total_loss / len(dataloader):.4f}, "
-                  f"Prediction: {probabilities[0].item():.4f}, Target: {target_scores[0].item():.4f}, Accuracy: {test(model, device):.4f}")
+                  f"Prediction: {probabilities[0].item():.4f}, Target: {target_scores[0].item():.4f}, Accuracy: {accuracy:.4f}")
+            
+            # Check if accuracy decreased
+            if accuracy < best_accuracy:
+                decrease_count += 1
+                print(f"Accuracy decreased for {decrease_count} consecutive epoch(s).")
+            else:
+                decrease_count = 0
+                best_accuracy = accuracy
+            
+            # Stop training if accuracy decreases for 3 consecutive epochs
+            if decrease_count >= 2:
+                print("Stopping training due to accuracy decrease for 2 consecutive epochs.")
+                break
+            
             epoch += 1
             scheduler.step()
             continue  # Continue to the next epoch if not interrupted
