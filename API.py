@@ -12,12 +12,23 @@ def get_events(year):
         'If-Modified-Since': ''
     }
     response = requests.get(url, headers=headers)
+    if int(response.status_code) != 200:
+        raise Exception(f"Error: {response.status_code}")
+    return response.json()
+
+def get_qual_matches(year, code):
+    url = f'https://frc-api.firstinspires.org/v3.0/{year}/matches/{code}?tournamentLevel=Qualification'
+    headers = {
+        'Authorization': f'Basic {encoded_auth_string}',
+        'If-Modified-Since': ''
+    }
+    response = requests.get(url, headers=headers)
     if response.status_code != 200:
         raise Exception(f"Error: {response.status_code}")
     return response.json()
 
-def get_matches(year, code):
-    url = f'https://frc-api.firstinspires.org/v3.0/{year}/matches/{code}?tournamentLevel=Qualification'
+def get_playoff_matches(year, code):
+    url = f'https://frc-api.firstinspires.org/v3.0/{year}/matches/{code}/Playoff'
     headers = {
         'Authorization': f'Basic {encoded_auth_string}',
         'If-Modified-Since': ''
