@@ -34,29 +34,12 @@ def test (model, device):
 def main ():
     # Create model
     model = ScorePredictor()
-    model.load_state_dict(torch.load("player_embeddings_model.pth"))
-    model.eval()
+    model.load_state_dict(torch.load("model.pth"))
 
-    testSet = torch.load("testSet.pt", weights_only=False)
-    dataloader = DataLoader(testSet, batch_size=64, shuffle=True, num_workers=os.cpu_count())
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     print(f"Using device: {device}")
     model.to(device)
-    criterion = Correct()
-    criterion.to(device)
-
-    total_accuracy = 0
-    total_batches = 0
-
-    for batch in dataloader:
-        ids, scores = batch[0].to(device), batch[1].to(device)
-        predictions = torch.sigmoid(model(ids))
-        accuracy = criterion(predictions, scores)
-        total_accuracy += accuracy.mean().item()
-        total_batches += 1
-
-    overall_accuracy = total_accuracy / total_batches if total_batches > 0 else 0
-    print(f"Overall Accuracy: {overall_accuracy}")
+    print(test(model, device))
 
 if __name__ == "__main__":
     main()

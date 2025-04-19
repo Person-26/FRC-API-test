@@ -3,7 +3,7 @@ import torch
 import torch.nn.functional as F
 
 class ScorePredictor(nn.Module):
-    def __init__(self, num_players = 100000, num_years = 30, num_events = 1000, embedding_dim = 64, hidden_dim = 2048):
+    def __init__(self, num_players = 100000, num_years = 30, num_events = 1000, embedding_dim = 64, hidden_dim = 1024):
         super(ScorePredictor, self).__init__()
         self.teams = nn.Embedding(num_players, embedding_dim)
         self.year = nn.Embedding(num_years, embedding_dim)
@@ -12,9 +12,9 @@ class ScorePredictor(nn.Module):
         self.year.weight.data.uniform_(-1, 1)  # Initialize year embeddings with random values
         self.fc1 = nn.Linear(embedding_dim * 8 + 1, hidden_dim)  # Input: 6 player embeddings, event embedding, year embedding, tournament level
         self.dropout1 = nn.Dropout(p=0.5) 
-        self.fc2 = nn.Linear(hidden_dim, hidden_dim)  # First additional layer
+        self.fc2 = nn.Linear(hidden_dim, hidden_dim // 2)  # Reduce dimensions
         self.dropout2 = nn.Dropout(p=0.5) 
-        self.fc3 = nn.Linear(hidden_dim, 1)  # Second additional layer
+        self.fc3 = nn.Linear(hidden_dim // 2, 1)  # Second additional layer
 
         for layer in [self.fc1, self.fc2, self.fc3]:
             nn.init.xavier_uniform_(layer.weight)
