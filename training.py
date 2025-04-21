@@ -55,7 +55,7 @@ def main():
             torch.save(model.state_dict(), "model.pth")  # Save the best model immediately
             
         print(f"Epoch {epoch}, Loss: {total_loss / len(dataloader):.4f}, "
-              f"Prediction: {probabilities[0].item():.4f}, Target: {target_scores[0].item():.4f}, Accuracy: {accuracy:.4f}, Best Accuracy: {best_accuracy:.4f}")
+              f"Accuracy: {accuracy:.4f}, Best Accuracy: {best_accuracy:.4f}")
         
         if decrease_count >= 2:
             print("Stopping training due to accuracy decrease")
