@@ -20,26 +20,11 @@ def main ():
     model.eval()
     total_accuracy = 0
     total_batches = 0
-    test_set = torch.load("testSet.pt", weights_only=False)
-    data_set = torch.load("dataset.pt", weights_only=False)
-    dataloader1 = DataLoader(test_set, batch_size=1, shuffle=False, num_workers=os.cpu_count())
-    dataloader2 = DataLoader(data_set, batch_size=1, shuffle=False, num_workers=os.cpu_count())
+    data = torch.load("alldata.pt", weights_only=False)
+    dataloader = DataLoader(data, batch_size=1, shuffle=False, num_workers=os.cpu_count())
     criterion = Correct()
     criterion.to(device)
-    for batch in dataloader1:
-        ids, scores = batch[0].to(device), batch[1].to(device)
-        if ids[0][0].item() == 25 and 6731 in ids[0][3:9] and ids[0][2] == 1:  
-            predictions = torch.sigmoid(model(ids))
-            accuracy = criterion(predictions, scores)
-            print(f"Event: {events[ids[0][1]]}, "
-                  f"Level: {"Qual" if(ids[0][2] == 0) else "Play"}, "
-                  f"Team Numbers: {[id.item() for id in ids[0][3:9]]}, "
-                  f"Prediction: {predictions[0].item()}, "
-                  f"Actual: {scores[0].item()}, "
-                  f"Correct: {bool(accuracy[0].item())}")
-            total_accuracy += accuracy.mean().item()
-            total_batches += 1
-    for batch in dataloader2:
+    for batch in dataloader:
         ids, scores = batch[0].to(device), batch[1].to(device)
         if ids[0][0].item() == 25 and 6731 in ids[0][3:9] and ids[0][2] == 1:  
             predictions = torch.sigmoid(model(ids))

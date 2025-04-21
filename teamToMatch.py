@@ -44,3 +44,5 @@ dataset = TensorDataset(torch.tensor(games, dtype=torch.int), torch.tensor(score
 torch.save(dataset, "dataset.pt")
 testset = TensorDataset(torch.tensor(test_games, dtype=torch.int), torch.tensor(test_scores, dtype=torch.float))
 torch.save(testset, "testset.pt")
+alldataset = TensorDataset(torch.tensor(games + test_games, dtype=torch.int), torch.tensor(scores + test_scores, dtype=torch.float))
+torch.save(alldataset, "alldata.pt")
